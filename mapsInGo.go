@@ -59,4 +59,32 @@ func main() {
 
 		fmt.Println("Value of map returned :", mapreturned)
 	}
+
+	fmt.Println("Basic opertions on map")
+
+	fmt.Printf("Employee 676001 Name %s\n", employee["676001"])
+
+	emplat676001, keypresent := employee["676001"]
+	fmt.Println(keypresent)
+	fmt.Println(emplat676001)
+
+	delete(employee, "676002")
+	emplat676002, keypresent2 := employee["676002"]
+	if keypresent2 == true {
+		fmt.Println("Not present %v \n", emplat676002)
+	} else {
+		fmt.Println(emplat676002)
+	}
+	for key, value := range employee {
+		//fmt.Println(key, value)
+		fmt.Printf("Key :: %s, Value :: %s, Memoryaddress :: %d \n", key, value, &value)
+	}
+
+	emplat676010, notpresent1 := employee["676010"]
+	if notpresent1 == false {
+		fmt.Println("Not present 1")
+	} else {
+		fmt.Println(emplat676010)
+	}
+
 }
