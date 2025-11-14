@@ -6,22 +6,22 @@ import (
 )
 
 
-type Person struct{
+type Person3 struct{
 	AADHAR string
 	PAN	string
 	DL	string
 	NAME string
 }
- var person1 =  Person{"AD111111111111","PN111111","DL1111111","111111"}
- var person2 =  Person{"AD222222222222","PN222222","DL2222222","222222"}
- var person3 =  Person{"AD333333333333","PN333333","DL3333333","333333"}
- var person4 =  Person{"AD444444444444","PN444444","DL4444444","444444"}
+ var person13 =  Person3{"AD111111111111","PN111111","DL1111111","111111"}
+ var person23 =  Person3{"AD222222222222","PN222222","DL2222222","222222"}
+ var person33 =  Person3{"AD333333333333","PN333333","DL3333333","333333"}
+ var person43 =  Person3{"AD444444444444","PN444444","DL4444444","444444"}
 
-var listOfPeople = make(map[string] Person)
+var listOfPeople3 = make(map[string] Person3)
 
-func fetchDetailsFromMap(aadhar string) (Person,error){
-	var personDummy =  Person{"XXXXX","XXXXX","XXXXX","XXXXX"}
-for id, value := range listOfPeople {
+func fetchDetailsFromMap2(aadhar string) (Person3,error){
+	var personDummy =  Person3{"XXXXX","XXXXX","XXXXX","XXXXX"}
+for id, value := range listOfPeople3 {
 		if(id == aadhar){
 			return value,nil
 		}
@@ -31,48 +31,56 @@ for id, value := range listOfPeople {
 
 }
 
-func validateEmployeeDetails(aadhar,pan,dl,name string) bool{
+func validateEmployeeDetails2(aadhar,pan,dl,name string) bool{
 	
 	bufferedChannel := make(chan bool,4)
 	
-	pesronFound,err := fetchDetailsFromMap(aadhar)
+	pesronFound,err := fetchDetailsFromMap2(aadhar)
 	if(err !=nil){
 		fmt.Println("EMPLOYEE DETAILS NOT FOUND WITH THIS AADHAR")
 		return false
 	}
 	fmt.Println("EMPLOYEE DETAILS FOUND WITH THIS AADHAR")
 
+	go func(){
+			if(pesronFound.AADHAR ==aadhar) {
+				bufferedChannel <- true
+			} else{
+				bufferedChannel <- false
+				
+			}
+		}()
 		
-		if(pesronFound.AADHAR ==aadhar) {
-			bufferedChannel <- true
-		} else{
-			bufferedChannel <- false
-		 	
-		}
+	go func(){
+			if(pesronFound.NAME==name) {
+				bufferedChannel <- true
+			} else{
+				bufferedChannel <- false
+				
+			}
+		}()
 	
-	
-		if(pesronFound.NAME==name) {
-			bufferedChannel <- true
-		} else{
-			bufferedChannel <- false
-		 	
-		}
-	
-
+		
+		go func(){
 		if(pesronFound.PAN ==pan) {
 			bufferedChannel <- true
 		} else{
 			bufferedChannel <- false
-		 	
+			
 		}
-	
+		}()
 
+		
+	
+	go func(){
 		if(pesronFound.DL ==dl) {
-			bufferedChannel <- true
+		bufferedChannel <- true
 		} else{
-			bufferedChannel <- false
-		 	
+		bufferedChannel <- false
+
 		}
+		}()
+		
 	
 
 	isValidated ,ok := <- bufferedChannel
@@ -104,12 +112,12 @@ func validateEmployeeDetails(aadhar,pan,dl,name string) bool{
 func main() {
 
 
-	listOfPeople["AD111111111111"] = person1
-	listOfPeople["AD222222222222"] = person2
-	listOfPeople["AD333333333333"] = person3
-	listOfPeople["AD444444444444"] = person4
+	listOfPeople3["AD111111111111"] = person13
+	listOfPeople3["AD222222222222"] = person23
+	listOfPeople3["AD333333333333"] = person33
+	listOfPeople3["AD444444444444"] = person43
 
-	validated := validateEmployeeDetails("AD111111111111","PN111111","DL1111111","111111")
+	validated := validateEmployeeDetails2("AD111111111111","PN111111","DL1111111","111111")
 	
 	if(validated){
 		fmt.Println("Person Details Validated succesully")
@@ -118,7 +126,7 @@ func main() {
 	}
 	fmt.Println()
 
-	validated1 := validateEmployeeDetails("AD111111111111","PN111112","DL1111111","111111")
+	validated1 := validateEmployeeDetails2("AD111111111111","PN111112","DL1111111","111111")
 
 	if(validated1){
 		fmt.Println("Person Details Validated succesully")
@@ -129,7 +137,7 @@ func main() {
 
 	
 
-	validated2 := validateEmployeeDetails("AD111111111112","PN111111","DL1111111","111111")
+	validated2 := validateEmployeeDetails2("AD111111111112","PN111111","DL1111111","111111")
 	if(validated2){
 		fmt.Println("Person Details Validated succesully")
 	}else{
@@ -138,7 +146,7 @@ func main() {
 
 fmt.Println()
 	
-	validated3 := validateEmployeeDetails("AD111111111111","PN111112","DL1111112","111111")
+	validated3 := validateEmployeeDetails2("AD111111111111","PN111112","DL1111112","111111")
 
 	if(validated3){
 		fmt.Println("Person Details Validated succesully")
